@@ -1,0 +1,2185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lyndify — Submit a Deal (Functional Mockup)</title>
+<link rel="icon" type="image/png" href="assets/LYNDIFY Monogram logo.png"/>
+<style>
+  :root{
+    --bg:#F4F6F8; --card:#ffffff; --border:#e5e7eb; --text:#0D1420; --muted:#5B6777;
+    --primary:#0B1F3B; --primary2:#18A37A; --good:#18A37A; --warn:#f59e0b; --bad:#ef4444;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; background:var(--bg); color:var(--text);}
+  header{ position:sticky; top:0; z-index:50; background:var(--card); border-bottom:1px solid var(--border);}
+  .headwrap{ max-width:1180px; margin:0 auto; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .brand{ display:flex; align-items:center; gap:10px;}
+  .logo{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--primary2)); box-shadow:0 10px 22px rgba(11,31,59,.18);}
+  .brand b{ font-size:16px;}
+  nav{ color:var(--muted); font-size:13px; display:flex; gap:14px; align-items:center;}
+  nav a{ color:var(--muted); text-decoration:none;}
+  nav a:hover{ color:var(--text);}
+  .container{ max-width:1180px; margin:22px auto; padding:0 18px;}
+  .grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:16px;}
+  @media (max-width:980px){ .grid{ grid-template-columns:1fr; } }
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; box-shadow:0 8px 24px rgba(15,23,42,.05);}
+  .title{ font-size:22px; margin:0 0 4px 0;}
+  .subtitle{ margin:0 0 14px 0; color:var(--muted);}
+  .stepper{ display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 16px;}
+  .pill{ font-size:12px; padding:7px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted);}
+  .pill.active{ background:var(--primary2); border-color:var(--primary2); color:#fff;}
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+  .row1{ display:grid; grid-template-columns:1fr; gap:12px;}
+  @media (max-width:720px){ .row,.row3{ grid-template-columns:1fr;} }
+  label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px;}
+  input,select{ width:100%; padding:10px 11px; border-radius:12px; border:1px solid var(--border); background:#fff; font-size:14px;}
+  input:focus,select:focus{ outline:2px solid rgba(37,99,235,.15); border-color:rgba(37,99,235,.45);}
+  .hint{ font-size:12px; color:var(--muted); margin-top:6px;}
+  .small{ font-size:12px; color:var(--muted);}
+  .banner{ border:1px dashed var(--border); border-radius:14px; padding:12px; background:#fafafa;}
+  .actions{ display:flex; justify-content:space-between; gap:10px; margin-top:16px;}
+  button{ border:0; border-radius:14px; padding:11px 14px; font-weight:600; cursor:pointer;}
+  button.secondary{ background:#e5e7eb; color:#111827;}
+  button.primary{ background:var(--primary); color:#fff;}
+  button.blue{ background:var(--primary2); color:#fff;}
+  button.ghost{ background:transparent; border:1px solid var(--border); color:var(--text);}
+  button:disabled{ opacity:.55; cursor:not-allowed;}
+  .hidden{ display:none !important;}
+  .divider{ height:1px; background:var(--border); margin:14px 0;}
+  .rightcard h3{ margin:0 0 8px 0; font-size:15px;}
+  ul{ margin:8px 0 0 18px; color:var(--muted);}
+  .req{ color:var(--bad); font-weight:700; margin-left:3px;}
+  .toast{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 12px; border-radius:12px; font-size:13px; box-shadow:0 14px 32px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:.18s;}
+  .toast.show{ opacity:1;}
+  .resultsHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;}
+  .kpis{ display:flex; gap:10px; flex-wrap:wrap;}
+  .kpi{ font-size:12px; color:var(--muted); background:#f8fafc; border:1px solid var(--border); padding:7px 10px; border-radius:999px;}
+  .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;}
+  .tab{ padding:8px 10px; border-radius:999px; border:1px solid var(--border); background:#fff; font-size:13px; cursor:pointer;}
+  .tab.active{ background:#111827; color:#fff; border-color:#111827;}
+  .lender{ border:1px solid var(--border); border-radius:16px; padding:14px; margin:10px 0;}
+  .lenderTop{ display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .badge{ font-size:12px; padding:5px 8px; border-radius:999px; font-weight:700;}
+  .badge.strong{ background:#dcfce7; color:#166534;}
+  .badge.good{ background:#e0f2fe; color:#075985;}
+  .badge.possible{ background:#fef3c7; color:#92400e;}
+  .why{ margin:8px 0 0 0; color:var(--muted); font-size:13px;}
+  .why li{ margin:4px 0;}
+  .lenderActions{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+  .loadingWrap{ display:flex; align-items:center; gap:10px; color:var(--muted);}
+  .spinner{ width:18px; height:18px; border-radius:50%; border:3px solid #e5e7eb; border-top-color:var(--primary2); animation:spin 1s linear infinite;}
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+  .slideOver{ position:fixed; right:0; top:0; height:100%; width:420px; max-width:92vw; background:#fff; border-left:1px solid var(--border); box-shadow:-20px 0 50px rgba(15,23,42,.12); padding:16px; transform:translateX(105%); transition:.2s; z-index:100; overflow:auto;}
+  .slideOver.open{ transform:translateX(0);}
+  .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:99;}
+  .overlay.show{ opacity:1; pointer-events:auto;}
+  .dangerText{ color:var(--bad); font-size:12px; margin-top:6px;}
+
+
+/* Premium header */
+  .site-header{
+    position:sticky; top:0; z-index:50;
+    background: linear-gradient(135deg, rgba(11,31,59,0.96), rgba(11,31,59,0.86));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .headwrap{ max-width: 1120px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+  .brand{ display:flex; align-items:center; gap:14px; min-width:0; }
+  .brand-logo{ height:42px; width:auto; display:block; border-radius:10px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+  .brand-tag{ color: rgba(255,255,255,0.88); font-size:12px; letter-spacing:0.12em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 420px; }
+  .nav{ display:flex; gap:16px; align-items:center; }
+  .navlink{ color: rgba(255,255,255,0.9); text-decoration:none; font-weight:600; font-size:14px; padding:10px 12px; border-radius:10px; }
+  .navlink:hover{ background: rgba(255,255,255,0.08); }
+  @media (max-width: 640px){
+    .brand-tag{ display:none; }
+    .nav{ gap:8px; }
+    .brand-logo{ height:38px; border-radius:10px; }
+  }
+
+  /* Loader */
+  #loader{
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(circle at 50% 30%, rgba(24,163,122,0.08), rgba(11,31,59,0.92) 60%, rgba(11,31,59,0.98));
+  }
+  .loader-card{
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    padding:22px 26px; border-radius:18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+  }
+  .loader-logo{ width:78px; height:78px; border-radius:18px; animation: spin 1.2s linear infinite; }
+  .loader-text{ color: rgba(255,255,255,0.9); font-weight:600; letter-spacing:0.02em; }
+  @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+
+  /* Footer */
+  .site-footer{ margin-top: 48px; padding: 28px 0; border-top:1px solid var(--border); background: #fff; }
+  .footwrap{ max-width:1120px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .footbrand{ display:flex; align-items:center; gap:10px; }
+  .footmark{ width:34px; height:34px; border-radius:10px; box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
+  .footword{ height:26px; width:auto; border-radius:10px; }
+  .footmeta{ color: var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<div id="loader" aria-label="Loading" role="status">
+  <div class="loader-card">
+    <img src="assets/LYNDIFY Network Mark logo.png" alt="Lyndify" class="loader-logo"/>
+    <div class="loader-text">Loading…</div>
+  </div>
+</div>
+<header class="site-header">
+  <div class="headwrap">
+    <div class="brand">
+      <img id="brandLogo" class="brand-logo" src="assets/Lyndify Wordmark.png" data-wordmark="assets/Lyndify Wordmark.png" data-monogram="assets/LYNDIFY Monogram logo.png" alt="Lyndify"/>
+      <div class="brand-text">
+        <div class="brand-tag">The Real Estate Capital Exchange</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#how" class="navlink" onclick="showHelp(); return false;">How it works</a>
+      <a href="#support" class="navlink" onclick="openSupport(); return false;">Support</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <div class="grid">
+    <div class="card" id="mainCard">
+      <h1 class="title" id="pageTitle">Submit a Deal</h1>
+      <p class="subtitle" id="pageSub">Submit what you know — we’ll run an instant match and show the best-fit lenders.</p>
+
+      <div class="stepper" id="stepper">
+        <div class="pill active" id="p1">Deal</div>
+        <div class="pill" id="p2">Property</div>
+        <div class="pill" id="p3">Borrower</div>
+        <div class="pill" id="p4">Review</div>
+      </div>
+
+      <div id="formArea">
+        <div id="step0">
+          <div class="banner">
+            <div class="row1">
+              <div>
+                <label>I'm submitting this deal as<span class="req">*</span></label>
+                <select id="role">
+  <option value="" selected disabled>Select…</option>
+  <option value="borrower">Borrower (I'm seeking financing for my own deal.)</option>
+  <option value="broker">Broker (I'm submitting on behalf of a borrower)</option>
+  <option value="referral">Referral Partner (I'm introducing a client who needs financing)</option>
+</select>
+                <div class="hint">Choose the role that best describes who is submitting this request.</div>
+              </div>
+
+              <div id="borrowerOccupancyWrap" class="hidden" style="margin-top:12px;">
+                <label>Do you live in the property?<span class="req">*</span></label>
+                <select id="borrowerOccupancy">
+                  <option value="" selected disabled>Select…</option>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+                <div class="hint">Lyndify focuses on non-owner occupied real estate investments.</div>
+
+                <div id="ownerOccMsg" class="hidden" style="margin-top:10px; padding:12px; border-radius:12px; background:#fff1f2; border:1px solid #fecdd3; color:#9f1239; font-size:13px;">
+                  We currently do not handle owner-occupied residential loans.
+                </div>
+
+              <div id="referralContactWrap" class="hidden" style="margin-top:12px;">
+                <label>Who are you referring?<span class="req">*</span></label>
+                <div class="hint">Add the client’s contact info so we can follow up quickly.</div>
+
+                <div class="row" style="margin-top:10px;">
+                  <div>
+                    <label>First Name<span class="req">*</span></label>
+                    <input id="refFirst" type="text" placeholder="First name"/>
+                  </div>
+                  <div>
+                    <label>Last Name<span class="req">*</span></label>
+                    <input id="refLast" type="text" placeholder="Last name"/>
+                  </div>
+                  <div>
+                    <label>Email<span class="req">*</span></label>
+                    <input id="refEmail" type="email" placeholder="name@email.com"/>
+                  </div>
+                  <div>
+                    <label>Phone<span class="req">*</span></label>
+                    <input id="refPhone" type="tel" placeholder="(###) ###-####"/>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="step1" class="hidden">
+          <div class="row">
+            <div>
+              <label>Use of Funds<span class="req">*</span></label>
+              <select id="useOfFunds"></select>
+            </div>
+            <div>
+              <label>Exit Strategy<span class="req">*</span></label>
+              <select id="exitStrategy">
+  <option value="" selected disabled>Select…</option>
+  <option value="sell">Sell</option>
+  <option value="refinance">Refinance</option>
+  <option value="hold_lt">Hold L/T</option>
+</select>
+            </div>
+            <div>
+              <label>Property State<span class="req">*</span></label>
+              <select id="state"></select>
+            </div>
+            <div>
+              <label>Property Type<span class="req">*</span></label>
+              <select id="ptype"></select>
+              <div class="hint" id="subCommercialHint" style="display:none;">Since you selected Commercial, please choose a sub-type below.</div>
+            </div>
+            <div id="subCommercialWrap" class="hidden">
+              <label>Sub-Commercial Property Type<span class="req">*</span></label>
+              <select id="subCommercial">
+                <option value="" selected disabled>Select…</option>
+                <option>Retail</option>
+                <option>Office</option>
+                <option>Industrial</option>
+                <option>Warehouse</option>
+                <option>Hospitality</option>
+                <option>Self-Storage</option>
+                <option>Medical</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label>Number of Units<span class="req">*</span></label>
+              <input id="units" type="number" min="1" step="1" placeholder="1"/>
+              <div class="hint">For Land, enter 1. For Apartments/Multifamily, enter total units.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div>
+              <label>Loan Amount Requested<span class="req">*</span></label>
+              <input id="loan" type="number" min="0" step="1000" placeholder="250000"/>
+            </div>
+            <div>
+              <label>Term Length<span class="req">*</span></label>
+              <select id="term"></select>
+            </div>
+          </div>
+
+          <div class="hint">Minimum required fields are marked with <span class="req">*</span>. Add valuation details next to improve match accuracy.</div>
+        </div>
+
+        <div id="step2" class="hidden">
+          <div class="row">
+            <div>
+              <label>As-Is Value</label>
+              <input id="asis" type="number" min="0" step="1000" placeholder="375000"/>
+            </div>
+            <div>
+              <label>After Repair Value (ARV)</label>
+              <input type="number" id="arv" placeholder="450000"/>
+              <div class="small">What do you estimate the property will be worth after repairs are completed?</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row3">
+            <div>
+              <label>LTV (auto)</label>
+              <input id="ltv" type="text" disabled placeholder="—"/>
+              <div class="hint">Loan Amount ÷ As-Is Value</div>
+            </div>
+            <div>
+              <label>LTARV (auto)</label>
+              <input id="ltarv" type="text" disabled placeholder="—"/>
+              <div class="hint">Loan Amount ÷ ARV</div>
+            </div>
+            <div>
+              <label>Occupancy / Residency</label>
+              <select id="occupancy">
+                <option value="" selected disabled>Select…</option>
+                <option>Owner-Occupied</option>
+                <option>Non-Owner / Investment</option>
+                <option>Second Home</option>
+              </select>
+              <div class="hint">Used for lender eligibility and pricing tiers.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="banner">
+            <b style="font-size:13px;">Accuracy tip</b>
+            <div class="small">Adding As-Is Value + ARV helps weight leverage (LTV / LTARV), a strong predictor of program fit.</div>
+          </div>
+        </div>
+
+        <div id="step3" class="hidden">
+          <div class="row">
+            <div>
+              <label>Credit Score Range</label>
+              <select id="credit">
+                <option value="" selected disabled>Select…</option>
+                <option>500–579</option>
+                <option>580–619</option>
+                <option>620–659</option>
+                <option>660–699</option>
+                <option>700–725</option>
+                <option>725–750</option>
+                <option>750–775</option>
+                <option>775–800</option>
+                <option>800+</option>
+              </select>
+            </div>
+            <div>
+              <label>Residency</label>
+              <select id="residency">
+                <option value="" selected disabled>Select…</option>
+                <option>US Citizen</option>
+                <option>Permanent Resident</option>
+                <option>Foreign National</option>
+              </select>
+            </div>
+            <div>
+              <label>Full Name<span class="req">*</span></label>
+              <input id="name" type="text" placeholder="Jane Doe"/>
+            </div>
+            <div>
+              <label>Email<span class="req">*</span></label>
+              <input id="email" type="email" placeholder="you@example.com"/>
+            </div>
+            <div>
+              <label>Phone (optional)</label>
+              <input id="phone" type="tel" placeholder="(555) 123-4567"/>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div id="brokerFields" class="hidden">
+            <div class="banner">
+              <b style="font-size:13px;">Broker details</b>
+              <div class="row" style="margin-top:10px;">
+                <div>
+                  <label>Broker Name<span class="req">*</span></label>
+                  <input id="brokerName" type="text" placeholder="Broker Name"/>
+                </div>
+                <div>
+                  <label>Broker Company</label>
+                  <input id="brokerCompany" type="text" placeholder="Company (optional)"/>
+                </div>
+              </div>
+              <div style="margin-top:10px;">
+                <label style="display:flex; align-items:center; gap:10px; margin:0;">
+                  <input id="ccBroker" type="checkbox" style="width:auto;"/>
+                  <span class="small">CC me on lender communications</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="hint">You can submit without a credit score — results will be marked “preliminary” until provided.</div>
+        </div>
+
+        <div id="step4" class="hidden">
+          <div class="banner">
+            <b style="font-size:13px;">Review</b>
+            <div class="small">Confirm your details, then run an instant match.</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row1">
+            <div class="banner" id="reviewBox"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row1">
+            <label style="display:flex; align-items:center; gap:10px; margin:0;">
+              <input id="emailCopy" type="checkbox" style="width:auto;"/>
+              <span class="small"><b>Optional:</b> Email me a copy of these match results</span>
+            </label>
+            <div class="small" style="margin-top:8px;">By submitting, you confirm this information is accurate to the best of your knowledge.</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type=\"button\" class="secondary" id="backBtn" onclick="prevStep()">Back</button>
+          <div style="display:flex; gap:10px;">
+            <button type=\"button\" class="ghost" onclick="saveDraft()">Save & Finish Later</button>
+            <button type=\"button\" class="primary" id="nextBtn" onclick="nextStep()">Continue</button>
+          </div>
+        </div>
+
+        <div id="validationMsg" class="dangerText hidden"></div>
+      </div>
+
+      <div id="loadingArea" class="hidden">
+        <div class="loadingWrap">
+          <div class="spinner" aria-hidden="true"></div>
+          <div>
+            <b>Matching your deal…</b>
+            <div class="small">Analyzing lender fit across use of funds, state, leverage, term, and more.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultsArea" class="hidden">
+        <div class="resultsHeader">
+          <div>
+            <h2 style="margin:0 0 4px 0;">We’ve found <span id="resultCount">0</span> lenders for your deal</h2>
+            <div class="small" id="matchedAt">Matched —</div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type=\"button\" class="blue" onclick="sendTop3()">Send to Top 3</button>
+            <button type=\"button\" class="ghost" onclick="downloadSummary()">Download Summary</button>
+            <button type=\"button\" class="secondary" onclick="editDeal()">Edit Deal</button>
+          </div>
+        </div>
+
+        <div class="kpis" id="kpiStrip" style="margin-top:10px;"></div>
+
+        <div class="tabs">
+          <div class="tab active" id="tabStrong" onclick="setTab('strong')">Strong Match</div>
+          <div class="tab" id="tabGood" onclick="setTab('good')">Good Match</div>
+          <div class="tab" id="tabPossible" onclick="setTab('possible')">Possible Match</div>
+        </div>
+
+        <div id="lendersList"></div>
+
+        <div class="banner" style="margin-top:12px;">
+          <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+            <div>
+              <b style="font-size:13px;">Not seeing the right fit?</b>
+              <div class="small">Request a manual review and we’ll help route this deal.</div>
+            </div>
+            <button type=\"button\" class="secondary" onclick="manualReview()">Request Manual Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rightcard" id="rightPanel">
+      <h3>Match Accuracy Tips</h3>
+      <ul>
+        <li>Add <b>As-Is Value</b> and <b>ARV</b> for best leverage fit (LTV / LTARV).</li>
+        <li>Include <b>credit score range</b> to avoid dead ends.</li>
+        <li>Confirm <b>occupancy</b> for eligibility and pricing tiers.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3>What happens next?</h3>
+      <ol class="small" style="color:var(--muted); margin:8px 0 0 18px;">
+        <li>You submit the deal</li>
+        <li>We match lenders instantly</li>
+        <li>You send to top lenders (or one lender)</li>
+        <li>We help route + package next steps</li>
+      </ol>
+
+      <div class="divider"></div>
+
+      <h3>Missing Info (Boost match quality)</h3>
+      <div class="small" style="margin-bottom:10px;">Provide these to increase confidence:</div>
+      <ul id="missingList"></ul>
+      <button type=\"button\" class="blue" style="margin-top:10px; width:100%;" onclick="openSlide()">Edit Details & Re-Run Match</button>
+
+      <div class="divider"></div>
+
+      <h3>Need help?</h3>
+      <button type=\"button\" class="primary" style="width:100%;" onclick="openSupport()">Schedule a support call</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSlide()"></div>
+<div class="slideOver" id="slideOver">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+    <div>
+      <b>Edit Details</b>
+      <div class="small">Add missing info and re-run match instantly.</div>
+    </div>
+    <button type=\"button\" class="ghost" onclick="closeSlide()">Close</button>
+  </div>
+  <div class="divider"></div>
+  <div class="row1">
+    <div>
+      <label>As-Is Value</label>
+      <input id="asis2" type="number" min="0" step="1000"/>
+    </div>
+    <div>
+      <label>ARV</label>
+      <input id="arv2" type="number" min="0" step="1000"/>
+    </div>
+    <div>
+      <label>Credit Score Range</label>
+      <select id="credit2">
+        <option value="" selected disabled>Select…</option>
+        <option>500–579</option>
+        <option>580–619</option>
+        <option>620–659</option>
+        <option>660–699</option>
+        <option>700+</option>
+      </select>
+    </div>
+    <div>
+      <label>Occupancy / Residency</label>
+      <select id="occupancy2">
+        <option value="" selected disabled>Select…</option>
+        <option>Owner-Occupied</option>
+        <option>Non-Owner / Investment</option>
+        <option>Second Home</option>
+      </select>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <button type=\"button\" class="blue" style="width:100%;" onclick="applySlide()">Apply & Re-Run Match</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Data
+  const STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "DC"];
+  const USE_OF_FUNDS = [
+  'Purchase',
+  'Purchase + Rehab',
+  'Refinance (Rate & Term)',
+  'Refinance (Cash-out)',
+  'New Construction (GUC)'
+];
+  const TERMS = ["6 months", "12 months", "18 months", "24 months", "36 months", "48 months", "5 years", "7 years", "10 years", "15 years", "20 years", "30 years"];
+  const PROPERTY_TYPES = ["SFR", "Residential 2-4 units", "Multifamily 5-9 units", "Apartments 10+ units", "Townhomes", "Condominiums", "Condotel", "Land", "Mixed-use", "Commercial"];
+
+  // Step state
+  let step = 0;
+  let tab = 'strong';
+  let lastResults = [];
+
+  // Helpers
+  const el = (id) => document.getElementById(id);
+  const money = (n) => n ? new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', maximumFractionDigits:0}).format(n) : '—';
+  const pct = (n) => (typeof n === 'number' && isFinite(n)) ? (Math.round(n*1000)/10) + '%' : '—';
+  function toast(msg){
+    const t = el('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2100);
+  }
+
+  function fillSelect(id, arr, placeholder='Select…'){
+    const s = el(id);
+    s.innerHTML = '';
+    const opt0 = document.createElement('option');
+    opt0.value = '';
+    opt0.disabled = true;
+    opt0.selected = true;
+    opt0.textContent = placeholder;
+    s.appendChild(opt0);
+    arr.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      s.appendChild(o);
+    });
+  }
+
+  function init(){
+    fillSelect('useOfFunds', USE_OF_FUNDS);
+    fillSelect('state', STATES, 'Select state…');
+    fillSelect('term', TERMS);
+    fillSelect('ptype', PROPERTY_TYPES);
+    el('backBtn').disabled = true;
+
+    // Event wiring
+    ['loan','asis','arv'].forEach(id => el(id).addEventListener('input', updateRatios));
+    el('ptype').addEventListener('change', handleCommercial);
+    el('role').addEventListener('change', handleRole);
+    el('borrowerOccupancy').addEventListener('change', handleBorrowerOccupancy);
+  }
+
+  function handleRole(){
+    const role = el('role').value;
+    const roleLabel = (role==='borrower')?'Borrower':(role==='broker')?'Broker':(role==='referral')?'Referral Partner':role;
+
+    // Broker fields
+    el('brokerFields').classList.toggle('hidden', !(role === 'broker' || role === 'referral'));
+
+    // Borrower-only owner-occupancy gate
+    const occWrap = el('borrowerOccupancyWrap');
+    const occSel = el('borrowerOccupancy');
+    const msg = el('ownerOccMsg');
+
+    const isBorrower = role === 'borrower';
+    occWrap.classList.toggle('hidden', !isBorrower);
+
+    if (!isBorrower){
+      if (occSel) occSel.value = '';
+      msg.classList.add('hidden');
+    }
+
+    // Referral Partner contact capture
+    const refWrap = el('referralContactWrap');
+    const isReferral = role === 'referral';
+    if (refWrap) refWrap.classList.toggle('hidden', !isReferral);
+
+    if (!isReferral){
+      // Reset if they switch away from Referral Partner
+      ['refFirst','refLast','refEmail','refPhone'].forEach(id => { const x = document.getElementById(id); if (x) x.value=''; });
+    }
+  }
+
+
+  
+
+  function handleBorrowerOccupancy(){
+    const role = el('role').value;
+    if (role !== 'borrower') return;
+    const occ = el('borrowerOccupancy').value;
+    const msg = el('ownerOccMsg');
+    if (occ === 'Yes') msg.classList.remove('hidden');
+    else msg.classList.add('hidden');
+  }
+
+function handleCommercial(){
+    const isCommercial = el('ptype').value === 'Commercial';
+    el('subCommercialWrap').classList.toggle('hidden', !isCommercial);
+    el('subCommercialHint').style.display = isCommercial ? 'block' : 'none';
+    if (!isCommercial) el('subCommercial').value = '';
+  }
+
+  function updateRatios(){
+    const loan = parseFloat(el('loan').value);
+    const asis = parseFloat(el('asis').value);
+    const arv = parseFloat(el('arv').value);
+    el('ltv').value = (loan>0 && asis>0) ? pct(loan/asis) : '—';
+    el('ltarv').value = (loan>0 && arv>0) ? pct(loan/arv) : '—';
+  }
+
+  function setStepper(){
+    for (let i=1;i<=4;i++) el('p'+i).classList.toggle('active', i===Math.max(1, step));
+    el('backBtn').disabled = (step === 0);
+    el('nextBtn').textContent = (step < 4) ? 'Continue' : 'Submit Deal';
+  }
+
+  function showStep(){
+    el('validationMsg').classList.add('hidden');
+    el('step0').classList.toggle('hidden', step !== 0);
+    el('step1').classList.toggle('hidden', step !== 1);
+    el('step2').classList.toggle('hidden', step !== 2);
+    el('step3').classList.toggle('hidden', step !== 3);
+    el('step4').classList.toggle('hidden', step !== 4);
+    setStepper();
+    if (step === 4) renderReview();
+  }
+
+  function showError(msg){
+    const v = el('validationMsg');
+    v.textContent = msg;
+    v.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function requiredCheckStep1(){
+    const missing = [];
+    if (!el('useOfFunds').value) missing.push('Use of Funds');
+    if (!el('exitStrategy').value) missing.push('Exit Strategy');
+    if (!el('state').value) missing.push('Property State');
+    if (!el('ptype').value) missing.push('Property Type');
+    if (el('ptype').value === 'Commercial' && !el('subCommercial').value) missing.push('Sub-Commercial Property Type');
+    const units = parseInt(el('units').value || '0', 10);
+    if (!(units >= 1)) missing.push('Number of Units');
+    const loan = parseFloat(el('loan').value);
+    if (!(loan > 0)) missing.push('Loan Amount');
+    if (!el('term').value) missing.push('Term Length');
+    return missing;
+  }
+
+  function requiredCheckStep3(){
+    const missing = [];
+    if (!el('name').value.trim()) missing.push('Full Name');
+    if (!el('email').value.trim()) missing.push('Email');
+    const role = el('role').value;
+    if (role === 'Broker'){
+      if (!el('brokerName').value.trim()) missing.push('Broker Name');
+    }
+    return missing;
+  }
+
+  function nextStep(){
+    if (step === 0){
+      const role = el('role').value;
+      if (!role) return showError('Please choose whether you are submitting as a Borrower, Broker, or Referral Partner.');
+
+      if (role === 'borrower'){
+        const occ = el('borrowerOccupancy').value;
+        if (!occ) return showError('Please confirm whether you live in the property.');
+        if (occ === 'Yes'){
+          el('ownerOccMsg').classList.remove('hidden');
+          return showError('We currently do not handle owner-occupied residential loans.');
+        }
+      }
+
+      if (role === 'referral'){
+        const fn = (el('refFirst')?.value || '').trim();
+        const ln = (el('refLast')?.value || '').trim();
+        const em = (el('refEmail')?.value || '').trim();
+        const ph = (el('refPhone')?.value || '').trim();
+        if (!fn || !ln || !em || !ph){
+          return showError('Please add the referred client’s first name, last name, email, and phone.');
+        }
+      }
+
+      step = 1; showStep(); return;
+    }
+    if (step === 1){
+      const miss = requiredCheckStep1();
+      if (miss.length) return showError('Please complete: ' + miss.join(', '));
+      step = 2; showStep(); return;
+    }
+    if (step === 2){
+      updateRatios();
+      step = 3; showStep(); return;
+    }
+    if (step === 3){
+      const miss = requiredCheckStep3();
+      if (miss.length) return showError('Please complete: ' + miss.join(', '));
+      step = 4; showStep(); return;
+    }
+    if (step === 4){
+      submitDeal();
+      return;
+    }
+  }
+
+  function prevStep(){
+    if (step > 0) step -= 1;
+    showStep();
+  }
+
+  function renderReview(){
+    const loan = parseFloat(el('loan').value);
+    const asis = parseFloat(el('asis').value);
+    const arv = parseFloat(el('arv').value);
+    const ltv = (loan>0 && asis>0) ? pct(loan/asis) : '—';
+    const ltarv = (loan>0 && arv>0) ? pct(loan/arv) : '—';
+    const role = el('role').value;
+
+    const delivery = el('emailCopy').checked ? 'Instant on-screen + Email copy' : 'Instant on-screen';
+
+    const propType = el('ptype').value + ((el('ptype').value==='Commercial' && el('subCommercial').value) ? (' — ' + el('subCommercial').value) : '');
+
+    let html = '';
+    html += '<div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">';
+    html += '  <div><b>Deal Summary</b><div class="small">Review details before submitting.</div></div>';
+    html += '  <div class="small">Delivery: <b>' + delivery + '</b></div>';
+    html += '</div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="row">';
+    html += '  <div><div class="small"><b>Role</b></div><div>' + role + '</div></div>';
+    html += '  <div><div class="small"><b>Use of Funds</b></div><div>' + el('useOfFunds').value + '</div></div>';
+    html += '  <div><div class="small"><b>Exit Strategy</b></div><div>' + el('exitStrategy').value + '</div></div>';
+    html += '  <div><div class="small"><b>State</b></div><div>' + el('state').value + '</div></div>';
+    html += '  <div><div class="small"><b>Property Type</b></div><div>' + propType + '</div></div>';
+    html += '  <div><div class="small"><b>Units</b></div><div>' + el('units').value + '</div></div>';
+    html += '</div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="row">';
+    html += '  <div><div class="small"><b>Loan Amount</b></div><div>' + money(loan) + '</div></div>';
+    html += '  <div><div class="small"><b>Term</b></div><div>' + el('term').value + '</div></div>';
+    html += '  <div><div class="small"><b>As-Is Value</b></div><div>' + money(asis) + '</div></div>';
+    html += '  <div><div class="small"><b>ARV</b></div><div>' + money(arv) + '</div></div>';
+    html += '  <div><div class="small"><b>LTV</b></div><div>' + ltv + '</div></div>';
+    html += '  <div><div class="small"><b>LTARV</b></div><div>' + ltarv + '</div></div>';
+    html += '</div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="row">';
+    html += '  <div><div class="small"><b>Credit Score</b></div><div>' + (el('credit').value || 'Not provided (preliminary match)') + '</div></div>';
+    html += '  <div><div class="small"><b>Residency</b></div><div>' + (el('residency').value || 'Not provided') + '</div></div>';
+    html += '  <div><div class="small"><b>Occupancy</b></div><div>' + (el('occupancy').value || 'Not provided') + '</div></div>';
+    html += '</div>';
+
+    if (role === 'Broker'){
+      html += '<div class="divider"></div>';
+      html += '<div class="row">';
+      html += '  <div><div class="small"><b>Broker Name</b></div><div>' + (el('brokerName').value || '—') + '</div></div>';
+      html += '  <div><div class="small"><b>Broker Company</b></div><div>' + (el('brokerCompany').value || '—') + '</div></div>';
+      html += '</div>';
+    }
+
+    html += '<div class="divider"></div>';
+    html += '<div class="row">';
+    html += '  <div><div class="small"><b>Contact</b></div><div>' + el('name').value + ' • ' + el('email').value + '</div></div>';
+    html += '  <div><div class="small"><b>Email copy</b></div><div>' + (el('emailCopy').checked ? 'Yes' : 'No') + '</div></div>';
+    html += '</div>';
+
+    el('reviewBox').innerHTML = html;
+  }
+
+  function getDealData(){
+    const loan = parseFloat(el('loan').value);
+    const asis = parseFloat(el('asis').value);
+    const arv = parseFloat(el('arv').value);
+    return {
+      role: el('role').value,
+      useOfFunds: el('useOfFunds').value,
+      exitStrategy: el('exitStrategy').value,
+      state: el('state').value,
+      propertyType: el('ptype').value,
+      subCommercial: el('subCommercial').value,
+      units: parseInt(el('units').value||'0',10),
+      loanAmount: loan,
+      term: el('term').value,
+      asIsValue: asis,
+      arv: arv,
+      ltv: (loan>0 && asis>0) ? (loan/asis) : null,
+      ltarv: (loan>0 && arv>0) ? (loan/arv) : null,
+      credit: el('credit').value,
+      residency: el('residency').value,
+      occupancy: el('occupancy').value,
+      emailCopy: el('emailCopy').checked
+    };
+  }
+
+
+  // Lenders & weighted scoring (including Veristone Capital)
+  const VERISTONE = {
+    name: 'Veristone Capital',
+    iconUrl: 'https://veristonecapital.com/logo.png',
+    email: 'travisw@veristonecapital.com',
+    phone: '(425) 503-3897',
+    website: 'https://veristonecapital.com/',
+    weights: [
+      { weight: 50, test: (a)=> ['Purchase','Purchase and Rehab','New Construction','Ground up construction','Refinance','Refinance and Rehab','Cashout Refi'].includes(a.useOfFunds) },
+      { weight: 50, test: (a)=> ['US Citizen','Permanent Resident'].includes(a.residency) },
+      { weight: 50, test: (a)=> a.state && !['AK','CA','CT','DE','DC','FL','IL','IN','IA','KS','LA','ME','MD','MA','MN','NE','NV','NJ','NY','NC','ND','RI','SC','SD','VT','WV','WI'].includes(a.state) },
+      { weight: 50, test: (a)=> ['SFR','Residential 2-4 units','Multifamily 5-9 units','Apartments 10+ units','Townhomes','Condominiums'].includes(a.propertyType) },
+      { weight: 15, test: (a)=> a.units <= 100 },
+      { weight: 30, test: (a)=> {
+          const cs = creditToNumber(a.credit);
+          if (a.useOfFunds === 'Cashout Refi') return cs >= 620;
+          return cs >= 600;
+        }},
+      { weight: 30, test: (a)=> a.loanAmount >= 85000 && a.loanAmount <= 5000000 },
+      { weight: 25, test: (a)=> a.asIsValue >= 125000 },
+      { weight: 25, test: (a)=> {
+          if (!a.ltv) return false;
+          if (a.useOfFunds === 'Cashout Refi') return a.ltv <= 0.65;
+          return a.ltv <= 0.70;
+        }},
+      { weight: 25, test: (a)=> {
+          if (!a.ltarv) return false;
+          if (a.useOfFunds === 'Cashout Refi') return a.ltarv <= 0.65;
+          return a.ltarv <= 0.70;
+        }},
+      { weight: 25, test: (a)=> a.arv >= 125000 },
+      { weight: 50, test: (a)=> ['6 months','12 months','18 months'].includes(a.term) },
+    ]
+  };
+
+  function creditToNumber(range){
+    if (!range) return 0;
+    if (range.includes('700')) return 700;
+    if (range.includes('660')) return 660;
+    if (range.includes('620')) return 620;
+    if (range.includes('580')) return 580;
+    if (range.includes('500')) return 500;
+    return 0;
+  }
+
+  function scoreWithWeights(lender, a){
+    let score = 0;
+    const reasons = [];
+    lender.weights.forEach(w => {
+      const pass = w.test(a);
+      if (pass){
+        score += w.weight;
+        reasons.push('+' + w.weight + ' matched criteria');
+      }
+    });
+    return { score, reasons };
+  }
+
+  const OTHER_LENDERS = [
+    { name:'Prime Capital Funding' },
+    { name:'Heritage Lending Group' },
+    { name:'Summit Construction Capital' },
+    { name:'Atlas Commercial Lending' },
+    { name:'Evergreen Land Funding' },
+    { name:'BlueRiver Multifamily' },
+  ];
+
+  const LENDERS = [
+  {
+    "id": "veristone",
+    "name": "Veristone Capital",
+    "iconUrl": "https://veristonecapital.com/logo.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "exp": "['Purchase','Purchase & Rehab','New Construction','Construction to Completion','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)",
+        "label": "Use of funds supported"
+      },
+      {
+        "weight": 50,
+        "exp": "['US Citizen','Permanent Resident'].includes(a.residencyStatus)",
+        "label": "Residency supported"
+      },
+      {
+        "weight": 50,
+        "exp": "stateAbbr != '' && !['AK','CA','CT','DE','DC','FL','IL','IN','IA','KS','LA','ME','MD','MA','MN','NE','NV','NJ','NY','NC','ND','RI','SC','SD','VT','WV','WI'].includes(stateAbbr)",
+        "label": "State coverage"
+      },
+      {
+        "weight": 50,
+        "exp": "['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium'].includes(a.propertyType)",
+        "label": "Property type supported"
+      },
+      {
+        "weight": 15,
+        "exp": "a.propertyNumberOfUnits <= 100",
+        "label": "Units ≤ 100"
+      },
+      {
+        "weight": 30,
+        "exp": "((a.useOfFunds === 'Cash Out Refinance' && a.statedCreditScore >= 620) || (a.useOfFunds !== 'Cash Out Refinance' && a.statedCreditScore >= 600))",
+        "label": "Credit minimum"
+      },
+      {
+        "weight": 30,
+        "exp": "a.loanAmountRequested >= 85000 && a.loanAmountRequested <= 5000000",
+        "label": "Loan amount $85k–$5M"
+      },
+      {
+        "weight": 25,
+        "exp": "a.asIsValue >= 125000",
+        "label": "As-Is ≥ $125k"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltv > 0) && ((a.useOfFunds === 'Cash Out Refinance' && ltv <= 0.65) || (a.useOfFunds !== 'Cash Out Refinance' && ltv <= 0.70))",
+        "label": "LTV within limits"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltarv > 0) && ((a.useOfFunds === 'Cash Out Refinance' && ltarv <= 0.65) || (a.useOfFunds !== 'Cash Out Refinance' && ltarv <= 0.70))",
+        "label": "LTARV within limits"
+      },
+      {
+        "weight": 25,
+        "exp": "a.afterRepairValue >= 125000",
+        "label": "ARV ≥ $125k"
+      },
+      {
+        "weight": 50,
+        "exp": "['6 Months','12 Months','18 Months'].includes(a.desiredTerm)",
+        "label": "Preferred term 6/12/18"
+      }
+    ],
+    "email": "travisw@veristonecapital.com",
+    "phone": "(425) 503-3897",
+    "website": "https://veristonecapital.com/"
+  },
+  {
+    "id": "gelt",
+    "name": "Gelt Financial",
+    "iconUrl": "https://geltfinancial.com/wp-content/uploads/2023/08/gelt-logo-retina-600w.webp",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "exp": "['Purchase','Purchase & Rehab','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)",
+        "label": "Use of funds supported"
+      },
+      {
+        "weight": 50,
+        "exp": "['US Citizen','Permanent Resident','Foreign National'].includes(a.residencyStatus)",
+        "label": "Residency supported (incl. Foreign National)"
+      },
+      {
+        "weight": 50,
+        "exp": "stateAbbr != '' && !['AK','AZ','CA','HI','ID','MN','NV','ND','OR','SD','UT','VT'].includes(stateAbbr)",
+        "label": "State coverage"
+      },
+      {
+        "weight": 50,
+        "exp": "['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Condotel','Mixed Use','Commercial'].includes(a.propertyType)",
+        "label": "Property type supported"
+      },
+      {
+        "weight": 15,
+        "exp": "a.propertyNumberOfUnits <= 1000",
+        "label": "Units ≤ 1000"
+      },
+      {
+        "weight": 30,
+        "exp": "a.statedCreditScore >= 300",
+        "label": "Credit ≥ 300"
+      },
+      {
+        "weight": 30,
+        "exp": "a.loanAmountRequested >= 100000 && a.loanAmountRequested <= 2000000",
+        "label": "Loan amount $100k–$2M"
+      },
+      {
+        "weight": 25,
+        "exp": "a.asIsValue >= 250000",
+        "label": "As-Is ≥ $250k"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltv > 0) && ltv <= 0.65",
+        "label": "LTV ≤ 65%"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltarv > 0) && ltarv <= 0.65",
+        "label": "LTARV ≤ 65%"
+      },
+      {
+        "weight": 25,
+        "exp": "a.afterRepairValue >= 250000",
+        "label": "ARV ≥ $250k"
+      },
+      {
+        "weight": 50,
+        "exp": "['6 Months','12 Months','18 Months','24 Months','36 Months','48 Months','5 Years'].includes(a.desiredTerm)",
+        "label": "Preferred term up to 5 years"
+      }
+    ],
+    "email": "info@geltfinancial.com",
+    "phone": "(561) 221-0900",
+    "website": "https://geltfinancial.com/"
+  },
+  {
+    "id": "rbi",
+    "name": "RBI Private Lending",
+    "iconUrl": "https://www.rbiprivatelending.com/wp-content/uploads/2022/06/NEW-2022-RBI-Private-Lending-Logo-2022.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "exp": "['Purchase','Purchase & Rehab','New Construction','Construction to Completion','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)",
+        "label": "Use of funds supported"
+      },
+      {
+        "weight": 50,
+        "exp": "['US Citizen','Permanent Resident','Foreign National'].includes(a.residencyStatus)",
+        "label": "Residency supported"
+      },
+      {
+        "weight": 50,
+        "exp": "stateAbbr != '' && !['ID','MO','NV','ND','OR','SD','UT','VT'].includes(stateAbbr)",
+        "label": "State coverage"
+      },
+      {
+        "weight": 50,
+        "exp": "['Single Family','Residential (2-4 Units)','Town Home','Condominium','Condotel','Land'].includes(a.propertyType)",
+        "label": "Property type supported"
+      },
+      {
+        "weight": 15,
+        "exp": "a.propertyNumberOfUnits <= 4",
+        "label": "Units ≤ 4"
+      },
+      {
+        "weight": 30,
+        "exp": "a.statedCreditScore >= 620",
+        "label": "Credit ≥ 620"
+      },
+      {
+        "weight": 30,
+        "exp": "a.loanAmountRequested >= 75000 && a.loanAmountRequested <= 5000000",
+        "label": "Loan amount $75k–$5M"
+      },
+      {
+        "weight": 25,
+        "exp": "a.asIsValue >= 75000",
+        "label": "As-Is ≥ $75k"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltv > 0) && ((['Purchase','Cash Out Refinance'].includes(a.useOfFunds) && ltv <= 0.75) || (a.useOfFunds === 'Purchase & Rehab' && ltv <= 0.93) || (['New Construction','Construction to Completion'].includes(a.useOfFunds) && ltv <= 0.95) || (a.useOfFunds === 'Refinance' && ltv <= 0.80) || (a.useOfFunds === 'Refinance & Rehab' && ltv <= 0.90))",
+        "label": "LTV by use of funds"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltarv > 0) && ltarv <= 0.75",
+        "label": "LTARV ≤ 75%"
+      },
+      {
+        "weight": 25,
+        "exp": "a.afterRepairValue >= 75000",
+        "label": "ARV ≥ $75k"
+      },
+      {
+        "weight": 50,
+        "exp": "['6 Months','12 Months','18 Months','24 Months','30 Years'].includes(a.desiredTerm)",
+        "label": "Preferred terms (incl. 30 years)"
+      }
+    ],
+    "email": "david@rbialliance.com",
+    "phone": "(239) 361-2316",
+    "website": "https://www.rbiprivatelending.com/"
+  },
+  {
+    "id": "rcn",
+    "name": "RCN Capital",
+    "iconUrl": "https://rcncapital.com/hubfs/raw_assets/public/Assets/logo-dark.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "exp": "['Purchase', 'Purchase & Rehab','New Construction','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)",
+        "label": "Use of funds supported"
+      },
+      {
+        "weight": 15,
+        "exp": "a.useOfFunds!=='Construction to Completion' && a.propertyNumberOfUnits<=9",
+        "label": "Units ≤ 9 (non C2C)"
+      },
+      {
+        "weight": 30,
+        "exp": "(a.useOfFunds === 'New Construction' && a.statedCreditScore >= 650) || (!['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.statedCreditScore >= 660)",
+        "label": "Credit minimum by use of funds"
+      },
+      {
+        "weight": 30,
+        "exp": "(['Purchase', 'Purchase & Rehab','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds) && loanAmountRequested >=75000 && loanAmountRequested<=2500000)||(a.useOfFunds==='New Construction' && loanAmountRequested >=100000 && loanAmountRequested<=2000000)",
+        "label": "Loan amount by use of funds"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltv > 0) && (['Purchase', 'Purchase & Rehab'].includes(a.useOfFunds) && ltv <=.925)||(a.useOfFunds==='New Construction' && ltv<.9)||(['Refinance','Refinance & Rehab'].includes(a.useOfFunds) && ltv <=.8)||(a.useOfFunds ==='Cash Out Refinance' && ltv <=.75)",
+        "label": "LTV by use of funds"
+      },
+      {
+        "weight": 25,
+        "exp": "(ltarv > 0) && (!['Refinance', 'Construction to Completion'].includes(a.useOfFunds) && ltarv <=0.75) || (a.useOfFunds === 'Refinance' && ltarv <=0.8)",
+        "label": "LTARV by use of funds"
+      },
+      {
+        "weight": 25,
+        "exp": "(!['New Construction', 'Construction to Completion'].includes(a.useOfFunds) && asIsValue >=50000) || (a.useOfFunds === 'New Construction' && asIsValue >=150000)",
+        "label": "As-Is value minimum"
+      },
+      {
+        "weight": 50,
+        "exp": "a.residencyStatus != ''",
+        "label": "Residency provided"
+      },
+      {
+        "weight": 50,
+        "exp": "['Condominium','Residential (2-4 Units)','Multi Family (5-9 Units)', 'Single Family', 'Town Home','Mixed Use'].includes(a.propertyType)",
+        "label": "Property type supported"
+      },
+      {
+        "weight": 50,
+        "exp": "stateAbbr != '' && !['NV', 'ND', 'SD', 'VT'].includes(stateAbbr)",
+        "label": "State coverage"
+      }
+    ],
+    "email": "info@rcncapital.com",
+    "phone": "(860) 432-5858",
+    "website": "https://rcncapital.com/"
+  },
+  {
+    "name": "Elite 1 Finance",
+    "iconUrl": "https://elite1finance.com/wp-content/uploads/2022/11/cropped-Small-Logo-removebg-preview.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase','Purchase & Rehab','New Construction','Construction to Completion','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≤ 500",
+        "exp": "a.propertyNumberOfUnits <= 500"
+      },
+      {
+        "weight": 30,
+        "label": "Credit minimum by use of funds",
+        "exp": "( ['Construction to Completion','Purchase','Purchase & Rehab'].includes(a.useOfFunds) && a.statedCreditScore >= 620 ) || ( ['New Construction','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds) && a.statedCreditScore >= 660 )"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount $250k–$1B",
+        "exp": "a.loanAmountRequested >= 250000 && a.loanAmountRequested <= 1000000000"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $300k",
+        "exp": "a.asIsValue >= 300000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV by use of funds",
+        "exp": "(ltv > 0) && ( (a.useOfFunds === 'Refinance' && ltv <= 0.75) || (a.useOfFunds === 'Cash Out Refinance' && ltv <= 0.70) || (a.useOfFunds === 'Purchase' && ltv <= 0.90) || (['Purchase & Rehab','New Construction','Refinance & Rehab','Construction to Completion'].includes(a.useOfFunds) && ltv <= 1.00) )"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV ≤ 75%",
+        "exp": "(ltarv > 0) && ltarv <= 0.75"
+      },
+      {
+        "weight": 25,
+        "label": "ARV ≥ $300k",
+        "exp": "a.afterRepairValue >= 300000"
+      },
+      {
+        "weight": 50,
+        "label": "US Citizen only",
+        "exp": "a.residencyStatus === 'US Citizen'"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr !== '' && !['VT','SD','ND'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "(['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Condotel','Mixed Use','Land'].includes(a.propertyType)) || (a.propertyType === 'Commercial' && ['Assisted Living','Automotive','Bar','Cannabis','Church','Funeral Home','Gas Station','Hotel','Industrial','Mobile Home Park','Motel','Office','Restaurant','Retail','Self Storage','Warehouse','Other'].includes(a.commercialPropertyKind))"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['12 Months','18 Months','24 Months','36 Months','48 Months','5 Years','7 Years','10 Years','15 Years','20 Years','30 Years'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "contact@elite1finance.com",
+    "phone": "(314) 341-9389",
+    "website": "https://elite1finance.com/"
+  },
+  {
+    "name": "Nuvida Funding",
+    "iconUrl": "https://nuvidafunding.com/wp-content/uploads/2022/04/NuvidaFunding_logo.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase','Purchase & Rehab','Construction to Completion','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen','Permanent Resident','Foreign National'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr!='' && !['CA','HI','ID','ME','NM','ND','OK','OR','RI','SD','WA','WY'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Mixed Use'].includes(a.propertyType) || (a.propertyType==='Commercial' && ['Retail','Office','Restaurant','Hotel','Self Storage','Mobile Home Park','Bar','Motel','Gas Station','Automotive','Other'].includes(a.commercialPropertyKind))"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≤ 100",
+        "exp": "a.propertyNumberOfUnits<=100"
+      },
+      {
+        "weight": 30,
+        "label": "Credit ≥ 400",
+        "exp": "a.statedCreditScore>=400"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount $50k–$1M",
+        "exp": "a.loanAmountRequested>=50000 && a.loanAmountRequested<=1000000"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $10k",
+        "exp": "a.asIsValue>=10000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV ≤ 65%",
+        "exp": "(ltv>0) && ltv<=0.65"
+      },
+      {
+        "weight": 25,
+        "label": "ARV ≥ $50k",
+        "exp": "a.afterRepairValue>=50000"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['6 Months','12 Months','18 Months','24 Months'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "brian@starkworld.com",
+    "phone": "(917) 791-4190",
+    "website": "https://nuvidafunding.com/"
+  },
+  {
+    "name": "Express Capital Financing",
+    "iconUrl": "https://expresscapitalfinancing.com/wp-content/uploads/2023/12/Express-Capital-FINAL-RGB.png.webp",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase','Purchase & Rehab','New Construction','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen','Permanent Resident','Foreign National'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr!=='' && !['ND','SD'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Mixed Use'].includes(a.propertyType) || (a.propertyType==='Commercial' && ['Retail','Office','Warehouse','Restaurant','Self Storage','Industrial','Bar','Gas Station','Automotive','Other'].includes(a.commercialPropertyKind))"
+      },
+      {
+        "weight": 15,
+        "label": "Units 1–100",
+        "exp": "a.propertyNumberOfUnits>0 && a.propertyNumberOfUnits<=100"
+      },
+      {
+        "weight": 30,
+        "label": "Credit minimum",
+        "exp": "(a.useOfFunds==='Purchase & Rehab' && a.statedCreditScore>=600) || (['Purchase','New Construction','Refinance','Cash Out Refinance','Refinance & Rehab'].includes(a.useOfFunds) && a.statedCreditScore>=650)"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount by use of funds",
+        "exp": "(a.loanAmountRequested>=100000) && ((['Purchase','Refinance','Cash Out Refinance'].includes(a.useOfFunds) && a.loanAmountRequested<=5000000) || (['Purchase & Rehab','New Construction','Refinance & Rehab'].includes(a.useOfFunds) && a.loanAmountRequested<=10000000))"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is minimum",
+        "exp": "(['Purchase','Refinance','Cash Out Refinance'].includes(a.useOfFunds) && a.asIsValue>=100000) || (['Purchase & Rehab','Refinance & Rehab'].includes(a.useOfFunds) && a.asIsValue>=50000) || (a.useOfFunds==='New Construction' && a.asIsValue>=10000)"
+      },
+      {
+        "weight": 25,
+        "label": "LTV by term / use of funds",
+        "exp": "(ltv>0) && ((['6 Months','12 Months','18 Months','24 Months'].includes(a.desiredTerm) && ((['Purchase','Purchase & Rehab','Refinance','Refinance & Rehab'].includes(a.useOfFunds) && ltv<=0.90) || (['New Construction','Cash Out Refinance'].includes(a.useOfFunds) && ltv<=0.75))) || (['5 Years','7 Years','10 Years','30 Years'].includes(a.desiredTerm) && ((a.useOfFunds==='Purchase' && ltv<=0.85) || (a.useOfFunds==='Refinance' && ltv<=0.80) || (a.useOfFunds==='Cash Out Refinance' && ltv<=0.75))))"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV ≤ 75%",
+        "exp": "(ltarv>0) && ltarv<=0.75"
+      },
+      {
+        "weight": 25,
+        "label": "ARV ≥ $100k",
+        "exp": "a.afterRepairValue>=100000"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['6 Months','12 Months','18 Months','24 Months','5 Years','7 Years','10 Years','30 Years','Other'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "leads@expresscapitalfinancing.com",
+    "phone": "(718) 285-0806",
+    "website": "https://expresscapitalfinancing.com/"
+  },
+  {
+    "name": "Innercore Capital",
+    "iconUrl": "https://static.wixstatic.com/media/f6e067_ec899b8ada5f496b8324add1e792bad3~mv2.png/v1/fill/w_254,h_40,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo%20Without%20Tagline-01PNG.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase', 'Purchase & Rehab', 'New Construction', 'Construction to Completion', 'Refinance', 'Refinance & Rehab', 'Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen', 'Permanent Resident', 'Foreign National'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr !== '' && !['AZ','CT','DE','DC','IA','ME','MD','NE','NV','NH','NJ','NM','NY','ND','OR','RI','SD','UT','VT','VA','WA','WV','WY'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "(['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Condotel','Mixed Use','Land'].includes(a.propertyType) && (a.propertyType !== 'Commercial' || ['Assisted Living','Automotive','Bar','Cannabis','Church','Funeral Home','Gas Station','Hotel','Industrial','Mobile Home Park','Motel','Office','Restaurant','Retail','Self Storage','Warehouse','Other'].includes(a.commercialPropertyKind)))"
+      },
+      {
+        "weight": 15,
+        "label": "Units 1–100",
+        "exp": "a.propertyNumberOfUnits > 0 && a.propertyNumberOfUnits <= 100"
+      },
+      {
+        "weight": 30,
+        "label": "Credit minimum",
+        "exp": "(['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.statedCreditScore >= 650) || (!['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.statedCreditScore >= 620)"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount",
+        "exp": "(['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.loanAmountRequested >= 150000 && a.loanAmountRequested <= 10000000) || (!['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.loanAmountRequested >= 100000 && a.loanAmountRequested <= 10000000)"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is minimum",
+        "exp": "(['Purchase','Purchase & Rehab','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds) && a.asIsValue >= 100000) || (a.useOfFunds === 'New Construction' && a.asIsValue >= 40000) || (a.useOfFunds === 'Construction to Completion' && a.asIsValue >= 175000)"
+      },
+      {
+        "weight": 25,
+        "label": "LTV by use of funds",
+        "exp": "(ltv > 0) && ( (['Purchase','New Construction'].includes(a.useOfFunds) && ltv <= 0.85) || (a.useOfFunds === 'Purchase & Rehab' && ltv <= 0.90) || (a.useOfFunds === 'Cash Out Refinance' && ltv <= 0.80) || (a.useOfFunds === 'Construction to Completion' && ltv <= 0.70) || (a.useOfFunds === 'Refinance' && ['6 Months','12 Months','18 Months','24 Months'].includes(a.desiredTerm) && ltv <= 0.80) || (a.useOfFunds === 'Refinance' && ['36 Months','48 Months','5 Years','7 Years','10 Years','15 Years','20 Years','30 Years'].includes(a.desiredTerm) && ltv <= 0.85) || (a.useOfFunds === 'Refinance & Rehab' && ['6 Months','12 Months','18 Months','24 Months'].includes(a.desiredTerm) && ltv <= 0.85) || (a.useOfFunds === 'Refinance & Rehab' && ['36 Months','48 Months','5 Years','7 Years','10 Years','15 Years','20 Years','30 Years'].includes(a.desiredTerm) && ltv <= 0.75) )"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV limits",
+        "exp": "(ltarv > 0) && ( (['Purchase & Rehab','New Construction'].includes(a.useOfFunds) && ltarv <= 0.75) || (a.useOfFunds === 'Construction to Completion' && ltarv <= 0.70) || (a.useOfFunds === 'Refinance & Rehab' && ltarv <= 0.85) || ['Purchase','Refinance','Cash Out Refinance'].includes(a.useOfFunds) )"
+      },
+      {
+        "weight": 25,
+        "label": "ARV minimum",
+        "exp": "a.afterRepairValue > 0 && ( (['Purchase','Refinance'].includes(a.useOfFunds) && a.afterRepairValue >= 100000) || (['Purchase & Rehab','Cash Out Refinance','Refinance & Rehab'].includes(a.useOfFunds) && a.afterRepairValue >= 125000) || (['New Construction','Construction to Completion'].includes(a.useOfFunds) && a.afterRepairValue >= 175000) )"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['6 Months','12 Months','18 Months','24 Months','36 Months','48 Months','5 Years','7 Years','10 Years','15 Years','20 Years','30 Years','Other'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "robert@innercorecapital.com",
+    "phone": "(619) 890-9825",
+    "website": "https://www.innercorecapital.com/"
+  },
+  {
+    "name": "Sound Capital",
+    "iconUrl": "https://soundcapital.com/wp-content/uploads/2022/01/SC-logo-tag.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase', 'Purchase & Rehab', 'New Construction', 'Construction to Completion', 'Refinance', 'Refinance & Rehab'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen', 'Permanent Resident', 'Foreign National'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State list coverage",
+        "exp": "['AL', 'AZ', 'CA', 'CO', 'CT', 'FL', 'GA', 'HI', 'ID', 'IN', 'KY', 'MD', 'MT', 'NV', 'NC', 'OH', 'OR', 'PA', 'SC', 'TN', 'TX', 'UT', 'WA'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type supported",
+        "exp": "['Single Family', 'Residential (2-4 Units)', 'Multi Family (5-9 Units)', 'Apartment Building (10+ Units)', 'Town Home', 'Condominium', 'Mixed Use', 'Land'].includes(a.propertyType)"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≤ 100",
+        "exp": "a.propertyNumberOfUnits <= 100"
+      },
+      {
+        "weight": 30,
+        "label": "Credit ≥ 660",
+        "exp": "a.statedCreditScore >= 660"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount $500k–$10M",
+        "exp": "a.loanAmountRequested >= 500000 && a.loanAmountRequested <= 10000000"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $500k",
+        "exp": "a.asIsValue >= 500000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV ≤ 80%",
+        "exp": "ltv > 0 && ltv <= 0.8"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV ≤ 75%",
+        "exp": "ltarv > 0 && ltarv <= 0.75"
+      },
+      {
+        "weight": 25,
+        "label": "ARV ≥ $500k",
+        "exp": "a.afterRepairValue >= 500000"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term 12/18/24",
+        "exp": "['12 Months', '18 Months', '24 Months'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "SteveA@soundcapital.com",
+    "phone": "(888) 490-4450",
+    "website": "https://soundcapital.com/"
+  },
+  {
+    "name": "Red Star Mortgage",
+    "iconUrl": "https://img1.wsimg.com/isteam/ip/453c0e43-8d29-43b3-898b-ecfe008fee5f/logo/7547a479-21a9-4f9a-bd12-ad4f98b6edd2.jpg/:/rs=w:129,h:80,cg:true,m/cr=w:129,h:80/qt=q:95",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase','Refinance','Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≥ 1",
+        "exp": "a.propertyNumberOfUnits >= 1"
+      },
+      {
+        "weight": 30,
+        "label": "Credit provided",
+        "exp": "a.statedCreditScore >= 0"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount $250k–$3M",
+        "exp": "a.loanAmountRequested >= 250000 && a.loanAmountRequested <= 3000000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV by use of funds",
+        "exp": "(ltv > 0) && ((a.useOfFunds==='Purchase' && ltv <= 0.80) || (a.useOfFunds==='Refinance' && ltv <= 0.75) || (a.useOfFunds==='Cash Out Refinance' && ltv <= 0.70))"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $150k",
+        "exp": "a.asIsValue >= 150000"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen','Permanent Resident','Foreign National'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "(['Single Family','Residential (2-4 Units)','Multi Family (5-9 Units)','Apartment Building (10+ Units)','Town Home','Condominium','Mixed Use'].includes(a.propertyType)) || (a.propertyType==='Commercial' && ['Retail','Office','Warehouse','Restaurant','Self Storage','Mobile Home Park','Industrial','Bar','Funeral Home','Other'].includes(a.commercialPropertyKind))"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr !== '' && !['VT','SD','ND','WV'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['36 Months','10 Years','15 Years','20 Years','30 Years','Other'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "Info@RedStarMortgage.com",
+    "phone": "(610) 645-5555",
+    "website": "https://redstarmortgage.com/"
+  },
+  {
+    "name": "CW Funding",
+    "iconUrl": "https://static.wixstatic.com/media/1121a1_c5b52f4a460f40d3a7f6990d2ede132f~mv2.png/v1/fill/w_450,h_134,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/CWLogo.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase', 'Purchase & Rehab', 'New Construction', 'Construction to Completion', 'Refinance', 'Refinance & Rehab', 'Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen', 'Permanent Resident'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr !== '' && !['VT', 'UT', 'SD', 'OR', 'ND', 'NV', 'MN', 'AZ'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type supported",
+        "exp": "['Single Family', 'Residential (2-4 Units)', 'Multi Family (5-9 Units)', 'Town Home', 'Condominium'].includes(a.propertyType)"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≤ 4",
+        "exp": "a.propertyNumberOfUnits <= 4"
+      },
+      {
+        "weight": 30,
+        "label": "Credit minimum",
+        "exp": "(['Construction to Completion', 'New Construction', 'Refinance & Rehab'].includes(a.useOfFunds) && a.statedCreditScore >= 680) || (['Purchase', 'Purchase & Rehab', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.statedCreditScore >= 660)"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount",
+        "exp": "a.loanAmountRequested >= 100000 && ((['Purchase & Rehab', 'New Construction', 'Construction to Completion', 'Refinance & Rehab'].includes(a.useOfFunds) && a.loanAmountRequested <= 5000000) || (['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.loanAmountRequested <= 3000000))"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $100k",
+        "exp": "a.asIsValue >= 100000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV limits",
+        "exp": "(['12 Months', '18 Months'].includes(a.desiredTerm) && ((['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && ltv <= 0.8) || (['Purchase & Rehab', 'New Construction', 'Construction to Completion'].includes(a.useOfFunds) && ltv <= 0.9) || (a.useOfFunds === 'Refinance & Rehab' && ltv <= 0.75))) || (['5 Years', '30 Years'].includes(a.desiredTerm) && ltv <= 0.8)"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV ≤ 75%",
+        "exp": "ltarv > 0 && ltarv <= 0.75"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['12 Months', '18 Months', '5 Years', '30 Years'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "howard@cwfunding.net",
+    "phone": "(516) 569-1575",
+    "website": "https://www.cwfunding.net/"
+  },
+  {
+    "name": "Easy Street Capital",
+    "iconUrl": "https://www.easystreetcap.com/wp-content/uploads/2022/11/Full-Color-PNG-1024x261.webp",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase', 'Purchase & Rehab', 'New Construction', 'Construction to Completion', 'Refinance', 'Refinance & Rehab', 'Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency supported",
+        "exp": "['US Citizen', 'Permanent Resident'].includes(a.residencyStatus)"
+      },
+      {
+        "weight": 50,
+        "label": "State coverage",
+        "exp": "stateAbbr !== '' && !['ND', 'SD'].includes(stateAbbr)"
+      },
+      {
+        "weight": 50,
+        "label": "Property type supported",
+        "exp": "['Single Family', 'Residential (2-4 Units)', 'Multi Family (5-9 Units)', 'Apartment Building (10+ Units)', 'Town Home', 'Condominium', 'Condotel', 'Mixed Use'].includes(a.propertyType)"
+      },
+      {
+        "weight": 15,
+        "label": "Units ≤ 10",
+        "exp": "a.propertyNumberOfUnits <= 10"
+      },
+      {
+        "weight": 30,
+        "label": "Credit minimum",
+        "exp": "(a.useOfFunds === 'Purchase & Rehab' && a.statedCreditScore >= 620) || (a.useOfFunds === 'Cash Out Refinance' && a.statedCreditScore >= 680) || (!['Purchase & Rehab', 'Cash Out Refinance'].includes(a.useOfFunds) && a.statedCreditScore >= 660)"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount",
+        "exp": "((['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.loanAmountRequested >= 75000) || (!['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.loanAmountRequested >= 100000)) && ((['Purchase', 'Refinance'].includes(a.useOfFunds) && a.loanAmountRequested <= 3500000) || (!['Purchase', 'Refinance'].includes(a.useOfFunds) && a.loanAmountRequested <= 2000000))"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is minimum",
+        "exp": "((['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.asIsValue >= 100000) || (!['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.asIsValue >= 75000))"
+      },
+      {
+        "weight": 25,
+        "label": "LTV limits",
+        "exp": "(['12 Months', '18 Months'].includes(a.desiredTerm) && ((a.useOfFunds === 'Cash Out Refinance' && ltv <= 0.6) || (a.useOfFunds === 'Purchase' && ltv <= 0.7))) || (a.desiredTerm === '30 Years' && ((a.useOfFunds === 'Cash Out Refinance' && ltv <= 0.75) || (a.useOfFunds === 'Purchase' && ltv <= 0.8))) || (a.useOfFunds === 'Refinance & Rehab' && ltv <= 0.65) || (a.useOfFunds === 'Construction to Completion' && ltv <= 0.65) || (a.useOfFunds === 'Refinance' && ltv <= 0.8) || (a.useOfFunds === 'New Construction' && ltv <= 0.85) || (a.useOfFunds === 'Purchase & Rehab' && ltv <= 0.9)"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV limits",
+        "exp": "(a.useOfFunds === 'Refinance & Rehab' || a.useOfFunds === 'Construction to Completion' || a.useOfFunds === 'New Construction') && ltarv <= 0.7 || (a.useOfFunds === 'Purchase & Rehab' || a.useOfFunds === 'Cash Out Refinance') && ltarv <= 0.75 || (a.useOfFunds === 'Purchase' || a.useOfFunds === 'Refinance') && ltarv <= 0.8"
+      },
+      {
+        "weight": 25,
+        "label": "ARV minimum",
+        "exp": "(a.useOfFunds === 'Purchase' || a.useOfFunds === 'Refinance' || a.useOfFunds === 'Cash Out Refinance') && a.afterRepairValue >= 100000 || (!['Purchase', 'Refinance', 'Cash Out Refinance'].includes(a.useOfFunds) && a.afterRepairValue >= 150000)"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['12 Months', '18 Months', '30 Years'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "tannerm@easystreetcap.com",
+    "phone": "(806) 282-7212",
+    "website": "https://easystreetcap.com/"
+  },
+  {
+    "name": "PMF Partners",
+    "iconUrl": "https://www.pmfpartners.com/wp-content/uploads/2022/08/logo-1-1.png",
+    "recommendationExps": [
+      {
+        "weight": 50,
+        "label": "Use of funds supported",
+        "exp": "['Purchase','Purchase & Rehab','Refinance','Refinance & Rehab','Cash Out Refinance'].includes(a.useOfFunds)"
+      },
+      {
+        "weight": 50,
+        "label": "Residency provided",
+        "exp": "a.residencyStatus != ''"
+      },
+      {
+        "weight": 50,
+        "label": "State provided",
+        "exp": "stateAbbr != ''"
+      },
+      {
+        "weight": 50,
+        "label": "Property type / commercial subtype",
+        "exp": "(['Multi Family (5-9 Units)','Apartment Building (10+ Units)','Mixed Use','Land','Commercial'].includes(a.propertyType)) && (a.propertyType !== 'Commercial' || ['Retail','Office','Warehouse','Cannabis','Restaurant','Hotel','Self Storage','Mobile Home Park','Church','Assisted Living','Industrial','Bar','Motel','Gas Station','Funeral Home','Automotive','Other'].includes(a.commercialPropertyKind))"
+      },
+      {
+        "weight": 15,
+        "label": "Units provided",
+        "exp": "a.propertyNumberOfUnits >= 0"
+      },
+      {
+        "weight": 30,
+        "label": "Credit provided",
+        "exp": "a.statedCreditScore >= 0"
+      },
+      {
+        "weight": 30,
+        "label": "Loan amount $400k–$5M",
+        "exp": "a.loanAmountRequested >= 400000 && a.loanAmountRequested <= 5000000"
+      },
+      {
+        "weight": 25,
+        "label": "As-Is ≥ $700k",
+        "exp": "a.asIsValue >= 700000"
+      },
+      {
+        "weight": 25,
+        "label": "LTV limits",
+        "exp": "(ltv > 0) && ((['Refinance','Cash Out Refinance'].includes(a.useOfFunds) && ltv <= 0.65) || (['Purchase','Purchase & Rehab','Refinance & Rehab'].includes(a.useOfFunds) && ltv <= 0.60))"
+      },
+      {
+        "weight": 25,
+        "label": "LTARV limits",
+        "exp": "(ltarv > 0) && ((['Refinance','Cash Out Refinance'].includes(a.useOfFunds) && ltarv <= 0.65) || (['Purchase','Purchase & Rehab','Refinance & Rehab'].includes(a.useOfFunds) && ltarv <= 0.60))"
+      },
+      {
+        "weight": 25,
+        "label": "ARV ≥ $1M",
+        "exp": "a.afterRepairValue >= 1000000"
+      },
+      {
+        "weight": 50,
+        "label": "Preferred term",
+        "exp": "['6 Months','12 Months','18 Months','24 Months'].includes(a.desiredTerm)"
+      }
+    ],
+    "email": "don@pmfpartners.com",
+    "phone": "(832) 577-8838",
+    "website": "https://www.pmfpartners.com/"
+  }
+];
+
+  
+// Canonical mapping (UI values -> lender engine values)
+function canonicalUseOfFunds(u){
+  const map = {
+    'Purchase': 'Purchase',
+    'Purchase and Rehab': 'Purchase & Rehab',
+    'Refinance': 'Refinance',
+    'Refinance and Rehab': 'Refinance & Rehab',
+    'Cashout Refi': 'Cash Out Refinance',
+    'New Construction': 'New Construction',
+    'Ground up construction': 'Construction to Completion'
+  };
+  return map[u] || u || '';
+}
+function canonicalPropertyType(t){
+  const map = {
+    'SFR':'Single Family',
+    'Residential 2-4 units':'Residential (2-4 Units)',
+    'Multifamily 5-9 units':'Multi Family (5-9 Units)',
+    'Apartments 10+ units':'Apartment Building (10+ Units)',
+    'Townhomes':'Town Home',
+    'Condominiums':'Condominium',
+    'Condotel':'Condominium',
+    'Land':'Land',
+    'Mixed-use':'Mixed Use',
+    'Commercial':'Commercial'
+  };
+  return map[t] || t || '';
+}
+function canonicalTerm(t){
+  const map = {
+    '6 months':'6 Months','12 months':'12 Months','18 months':'18 Months',
+    '24 months':'24 Months','36 months':'36 Months','48 months':'48 Months',
+    '5 years':'5 Years','7 years':'7 Years','10 years':'10 Years',
+    '15 years':'15 Years','20 years':'20 Years','30 years':'30 Years'
+  };
+  return map[t] || t || '';
+}
+function creditToNumber(range){
+  // Conservative: use lower bound of range
+  const map = {
+    '500–579':500,'580–619':580,'620–659':620,'660–699':660,
+    '700–725':700,'725–750':725,'750–775':750,'775–800':775,'800+':800
+  };
+  return map[range] || 0;
+}
+
+function compileExp(exp){
+  // Compiles a string expression like: "['Purchase'].includes(a.useOfFunds)"
+  // Provides a minimal evaluation scope: a, stateAbbr, ltv, ltarv, loanAmountRequested, asIsValue, afterRepairValue, desiredTerm
+  // NOTE: This is a prototype mockup and not hardened sandboxing.
+  try{
+    return new Function('a','stateAbbr','ltv','ltarv','loanAmountRequested','asIsValue','afterRepairValue','desiredTerm',
+      'return !!(' + exp + ');'
+    );
+  } catch(e){
+    return function(){ return false; };
+  }
+}
+
+function scoreLender(lender, d){
+  const a = {
+    useOfFunds: canonicalUseOfFunds(d.useOfFunds),
+    residencyStatus: d.residency || '',
+    propertyType: canonicalPropertyType(d.propertyType),
+    propertyNumberOfUnits: d.units || 0,
+    statedCreditScore: creditToNumber(d.credit),
+    loanAmountRequested: d.loanAmount || 0,
+    asIsValue: d.asIsValue || 0,
+    afterRepairValue: d.arv || 0,
+    desiredTerm: canonicalTerm(d.term),
+    commercialPropertyKind: (d.subCommercial || '')
+  };
+
+  const stateAbbr = d.state || '';
+  const ltv = (d.ltv !== null ? d.ltv : 0);
+  const ltarv = (d.ltarv !== null ? d.ltarv : 0);
+
+  // Convenience locals for lender expressions that reference these without "a."
+  const loanAmountRequested = a.loanAmountRequested;
+  const asIsValue = a.asIsValue;
+  const afterRepairValue = a.afterRepairValue;
+  const desiredTerm = a.desiredTerm;
+
+  const exps = lender.recommendationExps || [];
+  const total = exps.reduce((s,e)=>s+(e.weight||0), 0) || 1;
+  let earned = 0;
+
+  const details = exps.map(e=>{
+    const weight = e.weight || 0;
+    const label = e.label || e.exp || 'Criteria';
+    let pass = false;
+
+    try{
+      if (typeof e.test === 'function'){
+        pass = !!e.test(a, {stateAbbr, ltv, ltarv});
+      } else if (typeof e.exp === 'string'){
+        if (!e._fn) e._fn = compileExp(e.exp);
+        pass = !!e._fn(a, stateAbbr, ltv, ltarv, loanAmountRequested, asIsValue, afterRepairValue, desiredTerm);
+      }
+    } catch(err){
+      pass = false;
+    }
+
+    if (pass) earned += weight;
+    return { weight, label, pass };
+  });
+
+  const score = Math.round((earned / total) * 100);
+  return { score, earned, total, details };
+}
+
+function tier(score){
+  if (score >= 85) return 'strong';
+  if (score >= 70) return 'good';
+  return 'possible';
+}
+
+function reasonsFor(result){
+  const passes = result.details.filter(x=>x.pass).sort((a,b)=>b.weight-a.weight);
+  const fails  = result.details.filter(x=>!x.pass).sort((a,b)=>b.weight-a.weight);
+  const lines = [];
+  passes.slice(0,4).forEach(x=> lines.push(`✅ ${x.label} (+${x.weight})`));
+  fails.slice(0,3).forEach(x=> lines.push(`⚠️ ${x.label} (+0 / ${x.weight})`));
+  return lines;
+}
+
+function buildResults(d){
+  return LENDERS.map(l => {
+    const s = scoreLender(l, d);
+    return {
+      id: l.id,
+      name: l.name,
+      iconUrl: l.iconUrl,
+      email: l.email,
+      phone: l.phone,
+      website: l.website,
+      score: s.score,
+      tier: tier(s.score),
+      details: s.details
+    };
+  }).sort((a,b)=>b.score-a.score);
+}
+
+function setMissingInfo(d){
+    const missing = [];
+    if (!d.asIsValue) missing.push('As-Is Value');
+    if (!d.arv) missing.push('ARV');
+    if (!d.credit) missing.push('Credit Score');
+    if (!d.residency) missing.push('Residency');
+    if (!d.occupancy) missing.push('Occupancy / Residency');
+    const ul = el('missingList');
+    ul.innerHTML = '';
+    if (!missing.length){
+      ul.innerHTML = '<li class="small" style="color:var(--muted);">No missing fields — great.</li>';
+    } else {
+      missing.forEach(m => {
+        const li = document.createElement('li'); li.textContent = m; ul.appendChild(li);
+      });
+    }
+  }
+
+  function renderKPIs(d){
+    const chips = [
+      `Loan: ${money(d.loanAmount)}`,
+      `Term: ${d.term}`,
+      `State: ${d.state}`,
+      `Type: ${d.propertyType}`,
+      `Units: ${d.units}`,
+      `Exit: ${d.exitStrategy}`,
+      `LTV: ${d.ltv!==null ? pct(d.ltv) : '—'}`,
+      `LTARV: ${d.ltarv!==null ? pct(d.ltarv) : '—'}`,
+      `Credit: ${d.credit || '—'}`,
+      `Residency: ${d.residency || '—'}`,
+    ];
+    const wrap = el('kpiStrip');
+    wrap.innerHTML = '';
+    chips.forEach(c => {
+      const div = document.createElement('div'); div.className = 'kpi'; div.textContent = c; wrap.appendChild(div);
+    });
+  }
+
+  function setTab(t){
+    tab = t;
+    el('tabStrong').classList.toggle('active', tab==='strong');
+    el('tabGood').classList.toggle('active', tab==='good');
+    el('tabPossible').classList.toggle('active', tab==='possible');
+    renderLenders();
+  }
+
+  
+function renderLenders(){
+  const list = el('lendersList');
+  list.innerHTML = '';
+  const subset = lastResults.filter(r => r.tier === tab);
+
+  if (!subset.length){
+    list.innerHTML = `<div class="banner"><b style="font-size:13px;">No ${tab} matches</b><div class="small">Edit deal details to improve score.</div></div>`;
+    return;
+  }
+
+  subset.forEach(r => {
+    const tierLabel = r.tier==='strong'?'Strong Match':r.tier==='good'?'Good Match':'Possible Match';
+    const why = reasonsFor(r);
+
+    const card = document.createElement('div');
+    card.className = 'lender';
+    card.innerHTML = `
+      <div class="lenderTop">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <div style="width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+            ${r.iconUrl ? `<img src="${r.iconUrl}" alt="${r.name} logo" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display='none'">` : ''}
+          </div>
+          <div>
+            <b>${r.name}</b>
+            <div class="small">${r.website ? `<a href="${r.website}" target="_blank" rel="noreferrer" style="color:var(--primary2); text-decoration:none;">${r.website}</a>` : ''}</div>
+          </div>
+        </div>
+        <div class="badge ${r.tier}">${tierLabel} • ${r.score}</div>
+      </div>
+
+      <ul class="why">${why.map(x=>`<li>${x}</li>`).join('')}</ul>
+
+      <div class="small" style="margin-top:10px;">
+        <b>Contact:</b> ${r.email || '—'} ${r.phone ? ` • ${r.phone}` : ''}
+      </div>
+
+      <div class="lenderActions">
+        <button type=\"button\" class="primary" onclick="sendTo('${r.name.replace(/'/g, "\'")}')">Send to this lender</button>
+        <button type=\"button\" class="ghost" onclick="pricing('${r.name.replace(/'/g, "\'")}')">Request pricing</button>
+        <button type=\"button\" class="secondary" onclick="requirements('${r.name.replace(/'/g, "\'")}')">View requirements</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+
+  function submitDeal(){
+    el('formArea').classList.add('hidden');
+    el('loadingArea').classList.remove('hidden');
+    el('resultsArea').classList.add('hidden');
+
+    const d = getDealData();
+    setTimeout(()=>{
+      lastResults = buildResults(d);
+      el('resultCount').textContent = lastResults.length;
+      el('matchedAt').textContent = 'Matched ' + new Date().toLocaleString('en-US', { dateStyle:'medium', timeStyle:'short' });
+      renderKPIs(d);
+      setMissingInfo(d);
+      setTab('strong');
+
+      el('loadingArea').classList.add('hidden');
+      el('resultsArea').classList.remove('hidden');
+      el('pageTitle').textContent = 'Lender Matches';
+      el('pageSub').textContent = 'Review matches, then send to lenders or refine your details for better fit.';
+
+      if (d.emailCopy) toast('Email copy queued (mock).');
+    }, 900);
+  }
+
+  // Actions (mock)
+  function sendTo(name){ toast('Sent deal to ' + name + ' (mock).'); }
+  function pricing(name){ toast('Pricing request sent to ' + name + ' (mock).'); }
+  function requirements(name){ toast('Opened requirements for ' + name + ' (mock).'); }
+  function sendTop3(){ toast('Sent to Top 3 lenders (mock).'); }
+  function downloadSummary(){ toast('Downloaded summary (mock).'); }
+  function manualReview(){ toast('Manual review requested (mock).'); }
+  function editDeal(){
+    el('resultsArea').classList.add('hidden');
+    el('loadingArea').classList.add('hidden');
+    el('formArea').classList.remove('hidden');
+    el('pageTitle').textContent = 'Submit a Deal';
+    el('pageSub').textContent = 'Edit details and re-submit to update matches.';
+    step = 1;
+    showStep();
+    toast('Edit your deal and re-submit.');
+  }
+
+  function saveDraft(){
+    const d = getDealData();
+    localStorage.setItem('la_draft', JSON.stringify(d));
+    toast('Draft saved (local in your browser).');
+  }
+
+  function loadDraft(){
+    try{
+      const raw = localStorage.getItem('la_draft');
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      if (d.role) el('role').value = d.role;
+      handleRole();
+      if (d.useOfFunds) el('useOfFunds').value = d.useOfFunds;
+      if (d.exitStrategy) el('exitStrategy').value = d.exitStrategy;
+      if (d.state) el('state').value = d.state;
+      if (d.propertyType) el('ptype').value = d.propertyType;
+      handleCommercial();
+      if (d.subCommercial) el('subCommercial').value = d.subCommercial;
+      if (d.units) el('units').value = d.units;
+      if (d.loanAmount) el('loan').value = d.loanAmount;
+      if (d.term) el('term').value = d.term;
+      if (d.asIsValue) el('asis').value = d.asIsValue;
+      if (d.arv) el('arv').value = d.arv;
+      if (d.occupancy) el('occupancy').value = d.occupancy;
+      if (d.credit) el('credit').value = d.credit;
+      if (d.emailCopy) el('emailCopy').checked = true;
+      updateRatios();
+      toast('Loaded saved draft.');
+    }catch(e){}
+  }
+
+  // Slide-over editing
+  function openSlide(){
+    el('asis2').value = el('asis').value || '';
+    el('arv2').value = el('arv').value || '';
+    el('credit2').value = el('credit').value || '';
+    el('occupancy2').value = el('occupancy').value || '';
+    el('overlay').classList.add('show');
+    el('slideOver').classList.add('open');
+  }
+  function closeSlide(){
+    el('overlay').classList.remove('show');
+    el('slideOver').classList.remove('open');
+  }
+  function applySlide(){
+    el('asis').value = el('asis2').value;
+    el('arv').value = el('arv2').value;
+    el('credit').value = el('credit2').value;
+    el('occupancy').value = el('occupancy2').value;
+    updateRatios();
+    closeSlide();
+    toast('Details updated. Re-running match…');
+    const d = getDealData();
+    lastResults = buildResults(d);
+    el('resultCount').textContent = lastResults.length;
+    el('matchedAt').textContent = 'Re-matched ' + new Date().toLocaleString('en-US', { dateStyle:'medium', timeStyle:'short' });
+    renderKPIs(d);
+    setMissingInfo(d);
+    renderLenders();
+  }
+
+  function showHelp(){ toast('Mock: This flow collects deal data and ranks lender fit.'); }
+  function openSupport(){ toast('Mock: Support call scheduler would open here.'); }
+
+  init();
+  loadDraft();
+  showStep();
+</script>
+<script>
+  // Loader hide on full load
+  window.addEventListener('load', () => {
+    const loader = document.getElementById('loader');
+    if (!loader) return;
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 280ms ease';
+    setTimeout(() => loader.remove(), 320);
+  });
+
+  // Premium logo swap on scroll (wordmark -> monogram)
+  (function(){
+    const logo = document.getElementById('brandLogo');
+    if(!logo) return;
+    const wordmark = logo.getAttribute('data-wordmark');
+    const monogram = logo.getAttribute('data-monogram');
+    const swapAt = 18;
+    const onScroll = () => {
+      const scrolled = window.scrollY > swapAt;
+      logo.src = scrolled ? monogram : wordmark;
+      logo.style.height = scrolled ? '38px' : '42px';
+    };
+    window.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+  })();
+
+  // Footer year
+  (function(){
+    const y = document.getElementById('y');
+    if(y) y.textContent = new Date().getFullYear();
+  })();
+</script>
+<footer class="site-footer">
+  <div class="footwrap">
+    <div class="footbrand">
+      <img src="assets/LYNDIFY Network Mark logo.png" alt="Lyndify" class="footmark"/>
+      <img src="assets/Lyndify Wordmark.png" alt="Lyndify" class="footword"/>
+    </div>
+    <div class="footmeta">© <span id="y"></span> Lyndify. Built for non-owner occupied real estate.</div>
+  </div>
+</footer>
+</body>
+</html>
